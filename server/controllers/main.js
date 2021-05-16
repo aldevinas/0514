@@ -1,15 +1,15 @@
 const itemDb = require('../schemas/schema')
 
 
-
 module.exports = {
     upload: async (req, res) => {
+
         let newItem = new itemDb.itemsSchema
         newItem.name = req.body.name
         newItem.quantity = req.body.quantity
         newItem.price = req.body.price
         newItem.save().then(() => {
-            res.send({error: false, message: 'Produktas įkeltas'})
+            res.send({error: false, message: 'Inventory successfully added'})
         }).catch(e => {
             res.send({error: true, message: e})
             console.log(e)
@@ -26,7 +26,7 @@ module.exports = {
         await itemDb.itemsSchema.findByIdAndUpdate({_id: req.params.id}, {
             quantity: quantity
         })
-        res.send({error: false, message: 'Atnaujinta!'})
+        res.send({error: false, message: 'Uploaded'})
     },
     remove: async (req, res) => {
         let item = await itemDb.itemsSchema.find({_id: req.params.id})
@@ -34,11 +34,11 @@ module.exports = {
         await itemDb.itemsSchema.findByIdAndUpdate({_id: req.params.id}, {
             quantity: quantity
         })
-        res.send({error: false, message: 'Atnaujinta!'})
+        res.send({error: false, message: 'Uploaded'})
     },
     delete: async (req, res) => {
         await itemDb.itemsSchema.findOneAndDelete({_id: req.params.id})
         await itemDb.itemsSchema.findOneAndDelete({recipeId: req.params.id})
-        res.send({error: false, message: "Produktas ištrintas!"})
+        res.send({error: false, message: "Inventory item deleted"})
     },
 }

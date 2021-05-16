@@ -1,35 +1,46 @@
-const itemDb = require('../schemas/schema')
+const itemDb = require('../schemas/schema');
+
+
 
 module.exports = {
+
     validator: async (req, res, next) => {
+
+        const {name, quantity, price} = req.body
+
         function send(error, message) {
             res.send({error: error, message: message})
         }
-        if (req.body.name.length < 3 || req.body.name.length > 50) {
-            return send(true, 'Pavadiniams turi būti 3-50 simbolių ilgio')
+        if (quantity.length === 0) {
+            return send(true, 'Please, add title name in field')
         }
-        if (req.body.quantity.length === 0) {
-            return send(true, 'Įveskite kiekį')
+        if (name.length < 3 ) {
+            return send(true, 'Title name must heave more then 3 symbols')
         }
-        if (req.body.price.length === 0) {
-            return send(true, 'Įveskite kainą')
+        if (name.length > 50) {
+            return send(true, 'Title name must heave less then 3 symbols')
         }
-        if ((!/[^1-9]/.test(req.body.name))) {
-            return send(true, 'Blogai įvestas pavadinimas!')
+        if (price.length === 0) {
+            return send(true, 'Please, add price in field')
         }
-        if ((!/[^a-zA-Z]/.test(req.body.quantity))) {
-            return send(true, 'Kiekį turi sudaryti tik skaičiai!')
+        if ((!/[^1-9]/.test(name))) {
+            return send(true, 'Title must have letters!')
         }
-        if ((!/[^a-zA-Z]/.test(req.body.price))) {
-            return send(true, 'Kainą turi sudaryti tik skaičiai!')
+        if ((!/[^a-zA-Z]/.test(quantity))) {
+            return send(true, 'Quantity must heave number value')
+        }
+        if ((!/[^a-zA-Z]/.test(price))) {
+            return send(true, 'Price must heave number value')
         }
         next()
 
     },
+
     checkQuantity: async (req, res, next) => {
         let item = await itemDb.itemsSchema.find({_id: req.params.id})
+
         if (item[0].quantity === 0) {
-            return res.send({error: true, message: 'Prekių nėra'})
+            return res.send({error: true, message: 'There is no Inventory'})
         }
         next()
     }
